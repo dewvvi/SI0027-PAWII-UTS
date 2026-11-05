@@ -25,7 +25,7 @@ const penerbitSchema = new mongoose.Schema({
 // TODO A2: buat bukuSchema
 const bukuSchema = new mongoose.Schema({
   judul: { type: String, required: true, trim: true },
-  isbn: {type: String, required: true,unique: true,match: /^ISBN-\d{13}$/,},
+  isbn: {type: String, required: true,unique: true,match: /^\d{13}$/,},
   penulis: {type: [String],required: true,validate: {
       validator: (value) => value.length >= 1,
       message: "Minimal harus ada 1 penulis",
