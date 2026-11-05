@@ -10,9 +10,39 @@
 //                                                        message ke client TETAP generik
 //                                                        ("Terjadi kesalahan pada server"),
 //                                                        stack trace jangan dibocorkan
-
 function errorHandler(err, req, res, next) {
-  // TODO D1
+   if (err.status) {
+    return res.status(err.status).json({
+      message: err.message,
+    });
+  }
+
+  // D2: Validasi schema Mongoose gagal
+  if (err.name === "ValidationError") {
+    return res.status(400).json({
+      message: err.message,
+    });
+  }
+
+  // D3: Format ID/ObjectId tidak valid
+  if (err.name === "CastError") {
+    return res.status(400).json({
+      message: `Format ${err.path} tidak valid`,
+    });
+  }
+
+  // D4: Duplicate key (nilai unik duplikat)
+  if (err.code === 11000) {
+    return res.status(400).json({
+      message: "Data dengan nilai unik tersebut sudah ada",
+    });
+  }
+
+  // D5: Error tak terduga
+  console.error(err);
+  return res.status(500).json({
+    message: "Terjadi kesalahan pada server",
+  });
 }
 
 module.exports = errorHandler;
